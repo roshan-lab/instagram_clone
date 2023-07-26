@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/services.dart';
+import 'package:instagram/model/userModel.dart' as model;
 import 'package:instagram/resources/storageMethods.dart';
 
 class AuthMethods {
@@ -28,15 +29,18 @@ class AuthMethods {
 
         ///////////  add user to data base  //////
         print("cred user is ${cred.user!.uid}");
-        await fireStore.collection("users").doc(cred.user!.uid).set({
-          "username": username,
-          "uid": cred.user!.uid,
-          "email": email,
-          "bio": bio,
-          "followers": [],
-          "following": [],
-          "photoURL": photoURL,
-        });
+
+        model.User user=model.User(
+          username: username,
+          uid: cred.user!.uid,
+          photoURL: photoURL,
+          email: email,
+          bio: bio,
+          followers: [],
+          following: [],
+        );
+
+        await fireStore.collection("users").doc(cred.user!.uid).set(user.toJson(),);
         res = "Success";
       }
     } on FirebaseAuthException catch (err) {
