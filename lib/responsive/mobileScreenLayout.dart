@@ -2,7 +2,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:instagram/model/userModel.dart';
-
+import 'package:instagram/provider/userProvider.dart';
+import 'package:provider/provider.dart';
+import 'package:instagram/model/userModel.dart' as model;
 // String username = "";
 
 class MobileScreenLayout extends StatefulWidget {
@@ -36,9 +38,10 @@ class _MobileScreenLayoutState extends State<MobileScreenLayout> {
   // }
 
   Widget build(BuildContext context) {
+    model.User user=Provider.of<UserProvider>(context).getUser;
     return Scaffold(
       body: Center(
-          child: Text(" this is mobile",
+          child: Text(user.email,
         style: TextStyle(color: Colors.white),
       )),
     );
