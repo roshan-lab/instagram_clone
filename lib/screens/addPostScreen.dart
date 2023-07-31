@@ -1,5 +1,11 @@
+import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:instagram/provider/userProvider.dart';
 import 'package:instagram/utils/colors.dart';
+import 'package:instagram/utils/utils.dart';
+import 'package:provider/provider.dart';
 
 class AddPostScreen extends StatefulWidget {
   const AddPostScreen({super.key});
@@ -10,20 +16,67 @@ class AddPostScreen extends StatefulWidget {
 
 class _AddPostScreenState extends State<AddPostScreen> {
   @override
-  Widget build(BuildContext context) {
-    // return Center(
-    //   child: IconButton(
-    //     onPressed: (){},
-    //     icon: Icon(Icons.upload),
-    //   ),
-    // );
 
-    return Scaffold(
+  Uint8List?_file;
+  TextEditingController _descriptionController=TextEditingController();
+  _selectImage(BuildContext context)async{
+    return showDialog(context: context, builder: (context){
+      return
+      SimpleDialog(
+        title: const Text("Create new post"),
+        children: [
+          SimpleDialogOption(
+            padding: EdgeInsets.all(20.0),
+            child: const Text("Take a photo"),
+            onPressed: ()async{
+              Navigator.pop(context);
+              Uint8List file= await pickImage(ImageSource.camera);
+              setState(() {
+                _file=file;
+              });
+            },
+          ),
+          SimpleDialogOption(
+            padding: EdgeInsets.all(20.0),
+            child: const Text("Choose from gallery"),
+            onPressed: ()async{
+              Navigator.pop(context);
+              Uint8List file= await pickImage(ImageSource.gallery);
+              setState(() {
+                _file=file;
+              });
+            },
+          ),
+          SimpleDialogOption(
+            padding: EdgeInsets.all(20.0),
+            child: const Text("Cancel"),
+            onPressed: (){
+              Navigator.pop(context);
+            },
+          ),
+        ],
+      );
+    });
+  }
+
+  Widget build(BuildContext context) {
+
+    final user=Provider.of<UserProvider>(context).getUser;
+
+    return _file==null? Center(
+      child: IconButton(
+        onPressed: (){
+          _selectImage(context);
+        },
+        icon: Icon(Icons.upload),
+      ),
+    ):Scaffold(
       appBar: AppBar(
         backgroundColor: mobileBackgroundColor,
         leading: IconButton(
           icon: Icon(Icons.arrow_back),
-          onPressed: () {},
+          onPressed: () {
+          },
         ),
         title: const Text("Post to"),
         centerTitle: false,
@@ -46,12 +99,12 @@ class _AddPostScreenState extends State<AddPostScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               CircleAvatar(
-                backgroundImage: NetworkImage(
-                    "https://plus.unsplash.com/premium_photo-1670897798053-27b9dd0c2036?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=387&q=80"),
+                backgroundImage: NetworkImage(user.photoURL.toString()),
               ),
               SizedBox(
                 width: MediaQuery.of(context).size.width * 0.4,
                 child: TextField(
+                  controller: _descriptionController,
                   decoration: InputDecoration(
                     hintText: "Write a caption...",
                     border: InputBorder.none,
@@ -68,8 +121,7 @@ class _AddPostScreenState extends State<AddPostScreen> {
                     decoration: BoxDecoration(
 
                         image: DecorationImage(
-                            image: NetworkImage(
-                                "https://plus.unsplash.com/premium_photo-1670897798053-27b9dd0c2036?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=387&q=80"),
+                            image: MemoryImage(_file!),
                         fit: BoxFit.fill,
                           alignment: FractionalOffset.topCenter,
                         ),
@@ -85,8 +137,3 @@ class _AddPostScreenState extends State<AddPostScreen> {
     );
   }
 }
-
-
-
-
-// 3:10 hours se dekhna hai
