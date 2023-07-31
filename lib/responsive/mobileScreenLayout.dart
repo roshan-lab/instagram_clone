@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:instagram/model/userModel.dart';
 import 'package:instagram/provider/userProvider.dart';
 import 'package:instagram/utils/colors.dart';
+import 'package:instagram/utils/globalVariables.dart';
 import 'package:provider/provider.dart';
 import 'package:instagram/model/userModel.dart' as model;
 // String username = "";
@@ -65,13 +66,7 @@ class _MobileScreenLayoutState extends State<MobileScreenLayout> {
       body: PageView(
         controller: pageController,
         onPageChanged: onPageChange,
-        children: [
-          Text("feed"),
-          Text("fe"),
-          Text("ed"),
-          Text("eed"),
-          Text("f"),
-        ],
+        children: homeScreenItems,
       ),
       bottomNavigationBar: CupertinoTabBar(
         backgroundColor: mobileBackgroundColor,
